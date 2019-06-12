@@ -20,3 +20,11 @@
     }
   }
 }
+
+.chart-container {
+  .echart {
+    height: 100%;
+    width: 100%;
+  }
+  min-height: 400px;
+}

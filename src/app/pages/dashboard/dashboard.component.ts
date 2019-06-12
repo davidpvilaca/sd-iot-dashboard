@@ -1,6 +1,7 @@
-import {Component, OnDestroy} from '@angular/core';
+import { Component, OnDestroy, AfterViewInit } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
 import { takeWhile } from 'rxjs/operators' ;
+import { Subscription } from 'rxjs/Subscription';
 import { SolarData } from '../../@core/data/solar';
 
 interface CardSettings {
@@ -14,9 +15,11 @@ interface CardSettings {
   styleUrls: ['./dashboard.component.scss'],
   templateUrl: './dashboard.component.html',
 })
-export class DashboardComponent implements OnDestroy {
+export class DashboardComponent implements OnDestroy, AfterViewInit {
 
   private alive = true;
+  private themeSubscription: Subscription;
+  options: any = {};
 
   solarValue: number;
   lightCard: CardSettings = {
@@ -93,5 +96,93 @@ export class DashboardComponent implements OnDestroy {
 
   ngOnDestroy() {
     this.alive = false;
+    if (this.themeSubscription) {
+      this.themeSubscription.unsubscribe();
+    }
   }
+
+  ngAfterViewInit() {
+    this.themeSubscription = this.themeService.getJsTheme().subscribe(config => {
+
+      const colors: any = config.variables;
+      const echarts: any = config.variables.echarts;
+
+      this.options = {
+        backgroundColor: echarts.bg,
+        color: [colors.danger, colors.primary, colors.info],
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} - {b} : {c} ºC',
+          axisPointer: {
+            type: 'cross',
+          },
+        },
+        legend: {
+          left: 'left',
+          data: ['IFES Serra', 'IFES Cariacica'],
+          textStyle: {
+            color: echarts.textColor,
+          },
+        },
+        xAxis: [
+          {
+            type: 'category',
+            data: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'],
+            axisTick: {
+              alignWithLabel: true,
+            },
+            axisLine: {
+              lineStyle: {
+                color: echarts.axisLineColor,
+              },
+            },
+            axisLabel: {
+              textStyle: {
+                color: echarts.textColor,
+              },
+            },
+          },
+        ],
+        yAxis: [
+          {
+            type: 'value',
+            axisLine: {
+              lineStyle: {
+                color: echarts.axisLineColor,
+              },
+            },
+            splitLine: {
+              lineStyle: {
+                color: echarts.splitLineColor,
+              },
+            },
+            axisLabel: {
+              textStyle: {
+                color: echarts.textColor,
+              },
+            },
+          },
+        ],
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true,
+        },
+        series: [
+          {
+            name: 'IFES Serra',
+            type: 'line',
+            data: [22, 23, 31, 28, 21, 25, null],
+          },
+          {
+            name: 'IFES Cariacica',
+            type: 'line',
+            data: [21, 23, 28, 31, 23, 25, null],
+          }
+        ],
+      };
+    });
+  }
+
 }

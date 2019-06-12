@@ -18,6 +18,11 @@
     ],
     "plugins": [
       { "name": "tslint-language-service"}
-    ]
+    ],
+    "paths": {
+      "echarts": [
+        "node_modules/echarts/dist/echarts.min.js"
+      ]
+    }
   }
 }
