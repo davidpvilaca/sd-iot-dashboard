@@ -20,6 +20,7 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
   private alive = true;
   private themeSubscription: Subscription;
   options: any = {};
+  liveUpdateChartData: { value: [string, number] }[];
 
   solarValue: number;
   lightCard: CardSettings = {
