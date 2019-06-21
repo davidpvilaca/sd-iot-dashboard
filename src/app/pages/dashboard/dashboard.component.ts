@@ -126,14 +126,21 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
       const echarts: any = config.variables.echarts;
       const temperatura = await this.dataApiService.getTemperatura();
 
-      const dates = _.map(temperatura, d => moment(d.data).format('DD-MM-YYYY HH:mm:ss'));
+      const dates = _.uniq(_.map(temperatura, d => moment(d.data).format('DD-MM-YYYY HH:mm:ss')));
       const legends = _.map(_.uniqBy(temperatura, 'id'), d => d.id);
       const grouped = _.groupBy(temperatura, 'id');
       const series = _.keys(grouped).map(key => {
+        const _group = dates
+          .map((v, i) => {
+            if (_.isUndefined(grouped[key][i])) {
+              return null;
+            }
+            return grouped[key][i].temperatura;
+          });
         return {
           name: key,
           type: 'line',
-          data: grouped[key].map(d => d.temperatura),
+          data: _group,
         };
       });
 
@@ -212,10 +219,17 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
       const legends = _.map(_.uniqBy(umidade, 'id'), d => d.id);
       const grouped = _.groupBy(umidade, 'id');
       const series = _.keys(grouped).map(key => {
+        const _group = dates
+          .map((v, i) => {
+            if (_.isUndefined(grouped[key][i])) {
+              return null;
+            }
+            return grouped[key][i].umidade;
+          });
         return {
           name: key,
           type: 'line',
-          data: grouped[key].map(d => d.umidade),
+          data: _group,
         };
       });
 
@@ -294,10 +308,17 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
       const legends = _.map(_.uniqBy(pressao, 'id'), d => d.id);
       const grouped = _.groupBy(pressao, 'id');
       const series = _.keys(grouped).map(key => {
+        const _group = dates
+          .map((v, i) => {
+            if (_.isUndefined(grouped[key][i])) {
+              return null;
+            }
+            return grouped[key][i].pressao;
+          });
         return {
           name: key,
           type: 'line',
-          data: grouped[key].map(d => d.pressao),
+          data: _group,
         };
       });
 
