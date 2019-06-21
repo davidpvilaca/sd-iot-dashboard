@@ -110,10 +110,15 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
 
   ngAfterViewInit() {
     this.themeSubscription = this.themeService.getJsTheme().subscribe(async config => {
-      this.showUmidadeChart(config);
-      this.showTemperaturaChart(config);
-      this.showPressaoChart(config);
+      this.setupCharts(config);
     });
+  }
+
+  private setupCharts(config: NbJSThemeOptions) {
+    this.showUmidadeChart(config);
+    this.showTemperaturaChart(config);
+    this.showPressaoChart(config);
+    return setTimeout(this.setupCharts.bind(this, config), 5000);
   }
 
   private async showTemperaturaChart(config: NbJSThemeOptions) {
