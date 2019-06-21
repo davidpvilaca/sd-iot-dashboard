@@ -3,6 +3,7 @@ import { NbThemeService } from '@nebular/theme';
 import { takeWhile } from 'rxjs/operators' ;
 import { Subscription } from 'rxjs/Subscription';
 import * as _ from 'lodash';
+import * as moment from 'moment';
 import { SolarData } from '../../@core/data/solar';
 import { DataApiService } from '../../@core/providers';
 import { NbJSThemeOptions } from '@nebular/theme/services/js-themes/theme.options';
@@ -120,7 +121,7 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
       const echarts: any = config.variables.echarts;
       const temperatura = await this.dataApiService.getTemperatura();
 
-      const dates = _.map(temperatura, d => d.data);
+      const dates = _.map(temperatura, d => moment(d.data).format('DD-MM-YYYY HH:mm:ss'));
       const legends = _.map(_.uniqBy(temperatura, 'id'), d => d.id);
       const grouped = _.groupBy(temperatura, 'id');
       const series = _.keys(grouped).map(key => {
@@ -202,7 +203,7 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
       const echarts: any = config.variables.echarts;
       const umidade = await this.dataApiService.getUmidade();
 
-      const dates = _.map(umidade, d => d.data);
+      const dates = _.map(umidade, d => moment(d.data).format('DD-MM-YYYY HH:mm:ss'));
       const legends = _.map(_.uniqBy(umidade, 'id'), d => d.id);
       const grouped = _.groupBy(umidade, 'id');
       const series = _.keys(grouped).map(key => {
@@ -282,11 +283,11 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
   private async showPressaoChart(config: NbJSThemeOptions) {
     const colors: any = config.variables;
       const echarts: any = config.variables.echarts;
-      const umidade = await this.dataApiService.getPressao();
+      const pressao = await this.dataApiService.getPressao();
 
-      const dates = _.map(umidade, d => d.data);
-      const legends = _.map(_.uniqBy(umidade, 'id'), d => d.id);
-      const grouped = _.groupBy(umidade, 'id');
+      const dates = _.map(pressao, d => moment(d.data).format('DD-MM-YYYY HH:mm:ss'));
+      const legends = _.map(_.uniqBy(pressao, 'id'), d => d.id);
+      const grouped = _.groupBy(pressao, 'id');
       const series = _.keys(grouped).map(key => {
         return {
           name: key,
