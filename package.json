@@ -31,7 +31,8 @@
     "docs": "compodoc -p src/tsconfig.app.json -d docs",
     "docs:serve": "compodoc -p src/tsconfig.app.json -d docs -s",
     "release:changelog": "npm run conventional-changelog -- -p angular -i CHANGELOG.md -s",
-    "server:prod": "http-server ./dist -p 8080 -g -i --cors"
+    "server:prod": "http-server ./dist -p $PORT -g -i --cors",
+    "postinstall": "npm run build"
   },
   "dependencies": {
     "@agm/core": "^1.0.0-beta.5",
@@ -117,5 +118,9 @@
     "tslint": "5.7.0",
     "tslint-language-service": "^0.9.9",
     "typescript": "3.2.4"
+  },
+  "engines": {
+    "node": "^8.15.0",
+    "npm": "^6.4.1"
   }
 }
