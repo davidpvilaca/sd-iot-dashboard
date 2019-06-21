@@ -2,7 +2,10 @@ import { Component, OnDestroy, AfterViewInit } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
 import { takeWhile } from 'rxjs/operators' ;
 import { Subscription } from 'rxjs/Subscription';
+import * as _ from 'lodash';
 import { SolarData } from '../../@core/data/solar';
+import { DataApiService } from '../../@core/providers';
+import { NbJSThemeOptions } from '@nebular/theme/services/js-themes/theme.options';
 
 interface CardSettings {
   title: string;
@@ -19,8 +22,9 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
 
   private alive = true;
   private themeSubscription: Subscription;
-  options: any = {};
-  liveUpdateChartData: { value: [string, number] }[];
+  umidadeOptions: any = {};
+  temperaturaOptions: any = {};
+  pressaoOptions: any = {};
 
   solarValue: number;
   lightCard: CardSettings = {
@@ -81,7 +85,8 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
   };
 
   constructor(private themeService: NbThemeService,
-              private solarService: SolarData) {
+              private solarService: SolarData,
+              private dataApiService: DataApiService) {
     this.themeService.getJsTheme()
       .pipe(takeWhile(() => this.alive))
       .subscribe(theme => {
@@ -103,12 +108,30 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.themeSubscription = this.themeService.getJsTheme().subscribe(config => {
+    this.themeSubscription = this.themeService.getJsTheme().subscribe(async config => {
+      this.showUmidadeChart(config);
+      this.showTemperaturaChart(config);
+      this.showPressaoChart(config);
+    });
+  }
 
-      const colors: any = config.variables;
+  private async showTemperaturaChart(config: NbJSThemeOptions) {
+    const colors: any = config.variables;
       const echarts: any = config.variables.echarts;
+      const temperatura = await this.dataApiService.getTemperatura();
 
-      this.options = {
+      const dates = _.map(temperatura, d => d.data);
+      const legends = _.map(_.uniqBy(temperatura, 'id'), d => d.id);
+      const grouped = _.groupBy(temperatura, 'id');
+      const series = _.keys(grouped).map(key => {
+        return {
+          name: key,
+          type: 'line',
+          data: grouped[key].map(d => d.temperatura),
+        };
+      });
+
+      this.temperaturaOptions = {
         backgroundColor: echarts.bg,
         color: [colors.danger, colors.primary, colors.info],
         tooltip: {
@@ -120,7 +143,7 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
         },
         legend: {
           left: 'left',
-          data: ['IFES Serra', 'IFES Cariacica'],
+          data: legends, // legends here
           textStyle: {
             color: echarts.textColor,
           },
@@ -128,9 +151,9 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
         xAxis: [
           {
             type: 'category',
-            data: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'],
+            data: dates, // dates
             axisTick: {
-              alignWithLabel: true,
+              alignWithLabel: false,
             },
             axisLine: {
               lineStyle: {
@@ -170,20 +193,172 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
           bottom: '3%',
           containLabel: true,
         },
-        series: [
-          {
-            name: 'IFES Serra',
-            type: 'line',
-            data: [22, 23, 31, 28, 21, 25, null],
-          },
-          {
-            name: 'IFES Cariacica',
-            type: 'line',
-            data: [21, 23, 28, 31, 23, 25, null],
-          }
-        ],
+        series: series,
       };
-    });
+  }
+
+  private async showUmidadeChart(config: NbJSThemeOptions) {
+    const colors: any = config.variables;
+      const echarts: any = config.variables.echarts;
+      const umidade = await this.dataApiService.getUmidade();
+
+      const dates = _.map(umidade, d => d.data);
+      const legends = _.map(_.uniqBy(umidade, 'id'), d => d.id);
+      const grouped = _.groupBy(umidade, 'id');
+      const series = _.keys(grouped).map(key => {
+        return {
+          name: key,
+          type: 'line',
+          data: grouped[key].map(d => d.umidade),
+        };
+      });
+
+      this.umidadeOptions = {
+        backgroundColor: echarts.bg,
+        color: [colors.danger, colors.primary, colors.info],
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} - {b} : {c}',
+          axisPointer: {
+            type: 'cross',
+          },
+        },
+        legend: {
+          left: 'left',
+          data: legends, // legends here
+          textStyle: {
+            color: echarts.textColor,
+          },
+        },
+        xAxis: [
+          {
+            type: 'category',
+            data: dates, // dates
+            axisTick: {
+              alignWithLabel: false,
+            },
+            axisLine: {
+              lineStyle: {
+                color: echarts.axisLineColor,
+              },
+            },
+            axisLabel: {
+              textStyle: {
+                color: echarts.textColor,
+              },
+            },
+          },
+        ],
+        yAxis: [
+          {
+            type: 'value',
+            axisLine: {
+              lineStyle: {
+                color: echarts.axisLineColor,
+              },
+            },
+            splitLine: {
+              lineStyle: {
+                color: echarts.splitLineColor,
+              },
+            },
+            axisLabel: {
+              textStyle: {
+                color: echarts.textColor,
+              },
+            },
+          },
+        ],
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true,
+        },
+        series: series,
+      };
+  }
+
+  private async showPressaoChart(config: NbJSThemeOptions) {
+    const colors: any = config.variables;
+      const echarts: any = config.variables.echarts;
+      const umidade = await this.dataApiService.getPressao();
+
+      const dates = _.map(umidade, d => d.data);
+      const legends = _.map(_.uniqBy(umidade, 'id'), d => d.id);
+      const grouped = _.groupBy(umidade, 'id');
+      const series = _.keys(grouped).map(key => {
+        return {
+          name: key,
+          type: 'line',
+          data: grouped[key].map(d => d.pressao),
+        };
+      });
+
+      this.pressaoOptions = {
+        backgroundColor: echarts.bg,
+        color: [colors.danger, colors.primary, colors.info],
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} - {b} : {c}',
+          axisPointer: {
+            type: 'cross',
+          },
+        },
+        legend: {
+          left: 'left',
+          data: legends, // legends here
+          textStyle: {
+            color: echarts.textColor,
+          },
+        },
+        xAxis: [
+          {
+            type: 'category',
+            data: dates, // dates
+            axisTick: {
+              alignWithLabel: false,
+            },
+            axisLine: {
+              lineStyle: {
+                color: echarts.axisLineColor,
+              },
+            },
+            axisLabel: {
+              textStyle: {
+                color: echarts.textColor,
+              },
+            },
+          },
+        ],
+        yAxis: [
+          {
+            type: 'value',
+            axisLine: {
+              lineStyle: {
+                color: echarts.axisLineColor,
+              },
+            },
+            splitLine: {
+              lineStyle: {
+                color: echarts.splitLineColor,
+              },
+            },
+            axisLabel: {
+              textStyle: {
+                color: echarts.textColor,
+              },
+            },
+          },
+        ],
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true,
+        },
+        series: series,
+      };
   }
 
 }

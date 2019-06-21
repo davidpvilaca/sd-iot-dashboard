@@ -4,7 +4,6 @@ import { NgxEchartsModule } from 'ngx-echarts';
 
 import { ThemeModule } from '../../@theme/theme.module';
 import { DashboardComponent } from './dashboard.component';
-import { LiveUpdateChartComponent } from './live-update-chart';
 
 @NgModule({
   imports: [
@@ -13,7 +12,6 @@ import { LiveUpdateChartComponent } from './live-update-chart';
   ],
   declarations: [
     DashboardComponent,
-    LiveUpdateChartComponent,
   ],
 })
 export class DashboardModule { }

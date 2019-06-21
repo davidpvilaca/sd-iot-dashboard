@@ -3,14 +3,12 @@
     <p>Hello world!</p>
   </div>
   <div class="col chart-container">
-    <div echarts [options]="options" class="echart"></div>
+    <div echarts [options]="umidadeOptions" class="echart"></div>
   </div>
   <div class="col chart-container">
-    <div echarts [options]="options" class="echart"></div>
+    <div echarts [options]="temperaturaOptions" class="echart"></div>
   </div>
   <div class="col chart-container">
-    <ngx-live-update-chart
-      [liveUpdateChartData]="liveUpdateChartData">
-    </ngx-live-update-chart>
+    <div echarts [options]="pressaoOptions" class="echart"></div>
   </div>
 </div>
