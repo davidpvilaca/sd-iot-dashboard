@@ -1,14 +1,26 @@
 <div class="row">
-  <div class="col-12">
-    <p>Hello world!</p>
+  <div class="col chart-container">
+    <h3>Umidade</h3>
+    <div class="row">
+      <div class="col">
+        <div echarts [options]="umidadeOptions" class="echart"></div>
+      </div>
+    </div>
   </div>
   <div class="col chart-container">
-    <div echarts [options]="umidadeOptions" class="echart"></div>
+    <h3>Temperatura</h3>
+    <div class="row">
+      <div class="col">
+        <div echarts [options]="temperaturaOptions" class="echart"></div>
+      </div>
+    </div>
   </div>
   <div class="col chart-container">
-    <div echarts [options]="temperaturaOptions" class="echart"></div>
-  </div>
-  <div class="col chart-container">
-    <div echarts [options]="pressaoOptions" class="echart"></div>
+    <h3>Pressão</h3>
+    <div class="row">
+      <div class="col">
+        <div echarts [options]="pressaoOptions" class="echart"></div>
+      </div>
+    </div>
   </div>
 </div>
