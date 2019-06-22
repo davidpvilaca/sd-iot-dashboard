@@ -26,7 +26,7 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
   umidadeOptions: any = {};
   temperaturaOptions: any = {};
   pressaoOptions: any = {};
-  autoRefresh = true;
+  autoRefresh = false;
 
   solarValue: number;
   lightCard: CardSettings = {
@@ -112,13 +112,13 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
 
   ngAfterViewInit() {
     this.themeSubscription = this.themeService.getJsTheme().subscribe(async config => {
-      await this.setupCharts(config);
+      await this.setupCharts(config, true);
       this.loading.disable();
     });
   }
 
-  private async setupCharts(config: NbJSThemeOptions) {
-    if (this.autoRefresh) {
+  private async setupCharts(config: NbJSThemeOptions, isFirst?: boolean) {
+    if (this.autoRefresh || isFirst) {
       await this.showUmidadeChart(config);
       await this.showTemperaturaChart(config);
       await this.showPressaoChart(config);
@@ -135,24 +135,26 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
     const legends = _.map(_.uniqBy(temperatura, 'id'), d => d.id);
     const grouped = _.groupBy(temperatura, 'id');
     const series = _.keys(grouped).map(key => {
-      const _group = dates
-        .map((v, i) => {
-          if (_.isUndefined(grouped[key][i])) {
+      const mydates = _.map(grouped[key], d => moment(d.data).format('DD-MM-YYYY HH:mm:ss'));
+      const data = dates
+        .map((date, i) => {
+          const index = mydates.indexOf(date);
+          if (index === -1) {
             return null;
           }
-          return grouped[key][i].temperatura;
+          return grouped[key][index].temperatura;
         });
       return {
         name: key,
         type: 'line',
-        data: _group,
+        data,
         smooth: true,
       };
     });
 
     this.temperaturaOptions = {
       backgroundColor: echarts.bg,
-      color: [colors.danger, colors.primary, colors.info],
+      color: [colors.danger, colors.primary, colors.info, colors.success],
       tooltip: {
         trigger: 'item',
         formatter: '{a} - {b} : {c} ºC',
@@ -225,24 +227,26 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
     const legends = _.map(_.uniqBy(umidade, 'id'), d => d.id);
     const grouped = _.groupBy(umidade, 'id');
     const series = _.keys(grouped).map(key => {
-      const _group = dates
-        .map((v, i) => {
-          if (_.isUndefined(grouped[key][i])) {
+      const mydates = _.map(grouped[key], d => moment(d.data).format('DD-MM-YYYY HH:mm:ss'));
+      const data = dates
+        .map((date, i) => {
+          const index = mydates.indexOf(date);
+          if (index === -1) {
             return null;
           }
-          return grouped[key][i].umidade;
+          return grouped[key][index].umidade;
         });
       return {
         name: key,
         type: 'line',
-        data: _group,
+        data,
         smooth: true,
       };
     });
 
     this.umidadeOptions = {
       backgroundColor: echarts.bg,
-      color: [colors.danger, colors.primary, colors.info],
+      color: [colors.danger, colors.primary, colors.info, colors.success],
       tooltip: {
         trigger: 'item',
         formatter: '{a} - {b} : {c}',
@@ -315,24 +319,26 @@ export class DashboardComponent implements OnDestroy, AfterViewInit {
     const legends = _.map(_.uniqBy(pressao, 'id'), d => d.id);
     const grouped = _.groupBy(pressao, 'id');
     const series = _.keys(grouped).map(key => {
-      const _group = dates
-        .map((v, i) => {
-          if (_.isUndefined(grouped[key][i])) {
+      const mydates = _.map(grouped[key], d => moment(d.data).format('DD-MM-YYYY HH:mm:ss'));
+      const data = dates
+        .map((date, i) => {
+          const index = mydates.indexOf(date);
+          if (index === -1) {
             return null;
           }
-          return grouped[key][i].pressao;
+          return grouped[key][index].pressao;
         });
       return {
         name: key,
         type: 'line',
-        data: _group,
+        data,
         smooth: true,
       };
     });
 
     this.pressaoOptions = {
       backgroundColor: echarts.bg,
-      color: [colors.danger, colors.primary, colors.info],
+      color: [colors.danger, colors.primary, colors.info, colors.success],
       tooltip: {
         trigger: 'item',
         formatter: '{a} - {b} : {c}',
