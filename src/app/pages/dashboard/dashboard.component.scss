@@ -28,3 +28,142 @@
   }
   min-height: 400px;
 }
+
+/* iOS 8 Pure CSS Switch -- */
+
+input[type="checkbox"]{
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -webkit-transition: 400ms all;
+  transition: 400ms all;
+  margin: 0 auto 0 auto;
+  display: block;
+  border-radius: 50px;
+  background: white;
+  box-shadow: inset 0 0 0 2px rgba(0,0,0,.1);
+  width: 56px;
+  height: 36px;
+  outline: 0;
+  cursor: pointer;
+  position: relative;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  animation: input 4s;
+}
+input[type="checkbox"]:checked, input[type="checkbox"].checked {
+  background: #53D669;
+  box-shadow: inset 0 0 0 15px #53D669;
+  transition: 250ms all;
+}
+
+input[type="checkbox"]::before {
+  content:'';
+  transition: 300ms all;
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  bottom: 2px;
+  right: auto;
+  transform: translate(0,0);
+  display: block;
+  width: 32px;
+  height: 32px;
+  border-radius: 40px;
+  background: #FFFFFF;
+  box-shadow: 0 0 12px 0 rgba(0,0,0,0.06), 0 0 0 0 rgba(0,0,0,0.06), 0 6px 10px 0 rgba(0,0,0,0.15), 0 0 2px 0 rgba(0,0,0,0.07), 0 4px 6px 0 rgba(0,0,0,0.06), 0 1px 1px 0 rgba(0,0,0,0.11);
+  animation: button 3s ease-out;
+}
+
+input[type="checkbox"]:checked::before, input[type="checkbox"].checked::before{
+  transform: translate(20px,0);
+}
+
+/* input[type="checkbox"]:active::before {
+  width: 35px;
+}
+input[type="checkbox"]:checked:active::before, input[type="checkbox"].checked:active::before {
+  transform: translate(17px,0)
+} */
+
+input[type="checkbox"].red:checked { background: #FF4F2F; box-shadow: inset 0 0 0 15px #FF4F2F; }
+input[type="checkbox"].orange:checked { background: #FFAC42; box-shadow: inset 0 0 0 15px #FFAC42; }
+input[type="checkbox"].yellow:checked { background: #FFE842; box-shadow: inset 0 0 0 15px #FFE842; }
+input[type="checkbox"].green:checked { background: #50DF3D; box-shadow: inset 0 0 0 15px #50DF3D; }
+input[type="checkbox"].blue:checked { background: #40A7ED; box-shadow: inset 0 0 0 15px #40A7ED; }
+input[type="checkbox"].purple:checked { background: #AF57EC; box-shadow: inset 0 0 0 15px #AF57EC; }
+
+
+/* CUSTOM COLOR: Un-comment to use. Replace [..COLOR..] with your color in any acceptable HTML color format. -- */
+
+	/* input[type="checkbox"]:checked { background: [..COLOR..]; box-shadow: inset 0 0 0 15px [..COLOR..]; } */
+
+/* -- CUSTOM COLOR */
+
+/* -- iOS 8 Pure CSS Switch */
+
+
+/* Other page stuff -- */
+
+h1#header {
+  text-align: center;
+  font-family: Raleway;
+  margin: 0 0 30px 0;
+  font-size: 50px;
+  font-weight: normal;
+  line-height: 50px;
+  color: black;
+  /* animation: header 10s; */
+}
+
+ #webkit { background:rgba(255,0,0,.7);cursor: default; -webkit-user-select: none;-moz-user-select: none;-o-user-select: none;user-select: none;opacity: 0; height: 0; border: 1px solid red;border-radius:2px;padding:0 5px;color:white;margin:0 auto 0 auto;width: 450px;text-align: center;display:block;text-shadow: 0 1px 0 rgba(0,0,0,.1); animation: message 10s; font-family: sans-serif;
+ }
+
+@keyframes 'message' {
+	0% { opacity: 0; height: 0px; margin:0 auto 0 auto; padding: 0 5px; }
+	5% { opacity: 1; height: 18px; margin:0 auto 15px auto; padding: 5px 5px; }
+	95% { opacity: 1; height: 18px; margin:0 auto 15px auto; padding: 5px 5px; }
+	100% { opacity: 0; height: 0; margin:0 auto 0 auto; padding: 0 5px; }
+}
+
+@keyframes 'input' {
+	0% {
+		opacity: 0;
+		background: white;
+	  box-shadow: inset 0 0 0 2px rgba(0,0,0,.1);
+    pointer-events: none;
+	}
+	20% {
+		opacity: 0;
+		background: white;
+		box-shadow: inset 0 0 0 2px rgba(0,0,0,.1);
+    pointer-events: none;
+	}
+	100% {
+		background: white;
+		opacity: 1;
+		box-shadow: inset 0 0 0 2px rgba(0,0,0,.1);
+    pointer-events: auto;
+	}
+}
+
+@keyframes 'button' {
+	0% {
+		transform: translate3d(20px,0,0);
+	}
+	20% {
+		transform: translate3d(20px,0,0);
+	}
+	100% {
+		transform: translate3d(0,0,0);
+	}
+}
+
+@keyframes 'header' {
+  from { text-shadow: 0 1px 10px white, 0 0px 20px rgba(255,0,0,.4); }
+  to { text-shadow: 0 1px 0px white, 0 2px 0 rgba(0,0,0,.2); }
+}
+
+label.text-success {
+  color: #28a745 !important;
+}

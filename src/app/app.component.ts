@@ -5,14 +5,20 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { AnalyticsService } from './@core/utils/analytics.service';
+import { LoadingService } from './@core/providers';
 
 @Component({
   selector: 'ngx-app',
-  template: '<router-outlet></router-outlet>',
+  template: '<div [nbSpinner]="isLoading" nbSpinnerSize="xxlarge"><router-outlet></router-outlet></div>',
 })
 export class AppComponent implements OnInit {
 
-  constructor(private analytics: AnalyticsService) {
+  isLoading: boolean = true;
+  constructor(private analytics: AnalyticsService, private loading: LoadingService) {
+    this.loading.state.subscribe(
+      v => this.isLoading = v,
+      () => this.isLoading = false,
+    );
   }
 
   ngOnInit(): void {
